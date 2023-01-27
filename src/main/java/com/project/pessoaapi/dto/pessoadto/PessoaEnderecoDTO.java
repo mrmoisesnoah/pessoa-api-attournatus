@@ -1,11 +1,11 @@
-package com.project.pessoaapi.dto.enderecodto;
+package com.project.pessoaapi.dto.pessoadto;
 
 import com.project.pessoaapi.enums.TipoEndereco;
 import lombok.Data;
 
 @Data
-public class EnderecoDTO {
-    private String nomePessoa;
+public class PessoaEnderecoDTO {
+
     private Integer idEndereco;
     private TipoEndereco tipo;
     private String logradouro;

@@ -1,7 +1,6 @@
 package com.project.pessoaapi.dto.pessoadto;
 
 import com.project.pessoaapi.dto.enderecodto.EnderecoCreateDTO;
-import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import javax.validation.constraints.Past;
 import java.time.LocalDate;
 
 @Data
-public class PessoaCreateDTO {
+public class PessoaUpdateDTO {
     @NotNull
     @NotBlank
     @Schema(description = "Nome da Pessoa. Campo não pode ser vazio.", example = "Moises Noah")
@@ -20,6 +19,5 @@ public class PessoaCreateDTO {
     @NotNull
     @Schema(description = "Data de Nascimento do Usuario. Campo não pode ser vazio.", example = "1999/09/09")
     private LocalDate dataNascimento;
-    private EnderecoCreateDTO enderecoCreateDTO;
 
 }

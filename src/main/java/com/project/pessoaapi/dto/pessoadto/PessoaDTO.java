@@ -1,12 +1,14 @@
 package com.project.pessoaapi.dto.pessoadto;
 
-import lombok.*;
+import lombok.Data;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-public class PessoaDTO extends PessoaCreateDTO {
+import java.time.LocalDate;
+import java.util.List;
+
+@Data
+public class PessoaDTO {
     private Integer idPessoa;
+    private String nome;
+    private LocalDate dataNascimento;
+    private List<PessoaEnderecoDTO> enderecoDTOList;
 }

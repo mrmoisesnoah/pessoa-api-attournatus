@@ -1,5 +1,6 @@
 package com.project.pessoaapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,30 +27,11 @@ public class PessoaEntity {
 
     @Column(name = "DATA_NASCIMENTO")
     private LocalDate dataNascimento;
-
-    @Column(name = "CPF")
-    private String cpf;
-
-    @Column(name = "EMAIL")
-    private String email;
-
-
-
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "PESSOA_X_PESSOA_ENDERECO",
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "PESSOA_ENDERECO",
             joinColumns = @JoinColumn(name = "ID_PESSOA"),
             inverseJoinColumns = @JoinColumn(name = "ID_ENDERECO"))
     private Set<EnderecoEntity> enderecoEntity;
 
-
-    @Override
-    public String toString() {
-        return "Pessoa{" +
-                "idPessoa=" + idPessoa +
-                ", nome='" + nome + '\'' +
-                ", dataNascimento=" + dataNascimento +
-                ", cpf='" + cpf + '\'' +
-                '}';
-    }
 }

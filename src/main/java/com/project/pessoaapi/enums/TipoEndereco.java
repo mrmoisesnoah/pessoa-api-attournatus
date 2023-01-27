@@ -3,7 +3,7 @@ package com.project.pessoaapi.enums;
 import java.util.Arrays;
 
 public enum TipoEndereco {
-    RESIDENCIAL(1),
+    PRINCIPAL(1),
     COMERCIAL(2);
 
     private Integer tipo;

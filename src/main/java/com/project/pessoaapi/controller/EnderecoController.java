@@ -23,16 +23,6 @@ import java.util.List;
 public class EnderecoController  {
     private final EnderecoService enderecoService;
 
-    @GetMapping("/{idEndereco}")
-    public List<EnderecoDTO> listarByEndereco(@PathVariable("idEndereco") Integer id) {
-        return enderecoService.listarByEndereco(id);}
-
-
-    @GetMapping("/{idPessoa}/pessoa")
-    public List<EnderecoDTO> listarByPessoa(@PathVariable("idPessoa") Integer id) throws RegraDeNegocioException {
-       return enderecoService.listarByPessoa(id);
-    }
-
     @GetMapping
     public List<EnderecoDTO> list() {
         return enderecoService.list();
