@@ -96,6 +96,11 @@ public class EnderecoService {
         enderecoRepository.delete(enderecoEntityEncontrado);
     }
 
+    public EnderecoEntity findById(Integer id) throws RegraDeNegocioException {
+        return enderecoRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("O endereço não foi encontrado!"));
+    }
+
     public EnderecoDTO converterParaDTO(EnderecoEntity enderecoEntity){
         EnderecoDTO enderecoDTO = new EnderecoDTO();
         String nomePessoa = enderecoEntity.getPessoaEntity().stream()
@@ -110,12 +115,7 @@ public class EnderecoService {
         return enderecoDTO;
     }
 
-    public EnderecoEntity findById(Integer id) throws RegraDeNegocioException {
-        return enderecoRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("O endereço não foi encontrado!"));
-    }
-
-    private Page<EnderecoEntity> filtrarEnderecos(Integer idEndereco, Integer pagina, Integer tamanho) {
+    public Page<EnderecoEntity> filtrarEnderecos(Integer idEndereco, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idEndereco == null)) {
             return enderecoRepository.findByIdEndereco(pageRequest, idEndereco);
