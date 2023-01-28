@@ -30,23 +30,23 @@ public class PessoaService {
     private final EnderecoRepository enderecoRepository;
     private final ObjectMapper objectMapper;
 
-    public PageDTO<PessoaDTO> listarPaginado(Integer idPessoa, String nome, Integer page, Integer size) throws RegraDeNegocioException {
-        if (size < 0 || page < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+    public PageDTO<PessoaDTO> listarPaginado(Integer idPessoa, String nome, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Pagina ou Tamanho não podem ser menores que zero.");
         }
-        if (size > 0) {
-            Page<PessoaEntity> paginaRepository = filtrarPessoas(idPessoa, nome, page, size);
+        if (tamanho > 0) {
+            Page<PessoaEntity> paginaRepository = filtrarPessoas(idPessoa, nome, pagina, tamanho);
 
             List<PessoaDTO> pessoaDTOList = paginaRepository.stream().map(this::converterParaDTO).toList();
 
             return new PageDTO<>(paginaRepository.getTotalElements(),
                     paginaRepository.getTotalPages(),
-                    page,
-                    size,
+                    pagina,
+                    tamanho,
                     pessoaDTOList);
         }
         List<PessoaDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public PessoaDTO create(PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {

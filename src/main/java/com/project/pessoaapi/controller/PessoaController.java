@@ -31,7 +31,7 @@ public class PessoaController implements PessoaOpInterface {
 
 
     @GetMapping("/buscar-endereco")
-    public List<EnderecoDTO> buscarEndereco(@RequestParam(required = false) String nome, @RequestParam("tipo") TipoEndereco tipo) throws RegraDeNegocioException {
+    public List<EnderecoDTO> buscarEndereco(@RequestParam(required = false) String nome, @RequestParam TipoEndereco tipo) throws RegraDeNegocioException {
         return enderecoService.listarPorPessoaEtipoEndereco(nome,tipo);
     }
 

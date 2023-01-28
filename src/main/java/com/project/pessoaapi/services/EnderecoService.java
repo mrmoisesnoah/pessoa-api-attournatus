@@ -26,23 +26,23 @@ public class EnderecoService {
     private final EnderecoRepository enderecoRepository;
     private final PessoaService pessoaService;
 
-    public PageDTO<EnderecoDTO> listarPaginado(Integer idPessoa, Integer page, Integer size) throws RegraDeNegocioException {
-        if (size < 0 || page < 0) {
-            throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
+    public PageDTO<EnderecoDTO> listarPaginado(Integer idPessoa, Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        if (tamanho < 0 || pagina < 0) {
+            throw new RegraDeNegocioException("Pagina e Tamanho não podem ser menores que zero.");
         }
-        if (size > 0) {
-            Page<EnderecoEntity> paginaRepository = filtrarEnderecos(idPessoa,page,size);
+        if (tamanho > 0) {
+            Page<EnderecoEntity> paginaRepository = filtrarEnderecos(idPessoa,pagina,tamanho);
 
             List<EnderecoDTO> pessoaDTOList = paginaRepository.stream().map(this::converterParaDTO).toList();
 
             return new PageDTO<>(paginaRepository.getTotalElements(),
                     paginaRepository.getTotalPages(),
-                    page,
-                    size,
+                    pagina,
+                    tamanho,
                     pessoaDTOList);
         }
         List<EnderecoDTO> listaVazia = new ArrayList<>();
-        return new PageDTO<>(0L, 0, 0, size, listaVazia);
+        return new PageDTO<>(0L, 0, 0, tamanho, listaVazia);
     }
 
     public  List<EnderecoDTO> listarPorPessoaEtipoEndereco(String nome, TipoEndereco tipo) throws RegraDeNegocioException {

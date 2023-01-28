@@ -26,7 +26,7 @@ public interface EnderecoRepository extends JpaRepository<EnderecoEntity, Intege
             "INNER JOIN ed.pessoaEntity pessoa " +
             "ON (ed.tipo = :tipo)" +
             "AND ( :nome is null or UPPER(pessoa.nome) LIKE UPPER(concat('%',:nome, '%')))")
-    Optional<EnderecoEntity> findByFiltro(String nome, TipoEndereco tipo);
+    List<EnderecoEntity> findByFiltro(String nome, TipoEndereco tipo);
 
 
 }
