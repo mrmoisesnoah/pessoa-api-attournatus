@@ -1,10 +1,8 @@
 package com.project.pessoaapi.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.pessoaapi.dto.enderecodto.EnderecoCreateDTO;
 import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
 import com.project.pessoaapi.dto.paginacaodto.PageDTO;
-import com.project.pessoaapi.dto.pessoadto.PessoaDTO;
 import com.project.pessoaapi.entity.EnderecoEntity;
 import com.project.pessoaapi.entity.PessoaEntity;
 import com.project.pessoaapi.enums.TipoEndereco;
@@ -15,7 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
