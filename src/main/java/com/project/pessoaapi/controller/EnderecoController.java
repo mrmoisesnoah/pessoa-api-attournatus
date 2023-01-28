@@ -1,8 +1,10 @@
 package com.project.pessoaapi.controller;
 
 
+import com.project.pessoaapi.controller.documentation.EnderecoOpInterface;
 import com.project.pessoaapi.dto.enderecodto.EnderecoCreateDTO;
 import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
+import com.project.pessoaapi.dto.paginacaodto.PageDTO;
 import com.project.pessoaapi.exceptions.RegraDeNegocioException;
 import com.project.pessoaapi.services.EnderecoService;
 import lombok.RequiredArgsConstructor;
@@ -13,19 +15,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Slf4j
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/endereco")
-public class EnderecoController  {
+public class EnderecoController implements EnderecoOpInterface {
     private final EnderecoService enderecoService;
 
-    @GetMapping
-    public List<EnderecoDTO> list() {
-        return enderecoService.list();
+    @GetMapping("/listar-paginado")
+    public ResponseEntity<PageDTO<EnderecoDTO>> listarPaginado(@RequestParam(required = false) Integer idEndereco,
+                                                               Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return new ResponseEntity<>(enderecoService.listarPaginado(idEndereco, pagina, tamanho), HttpStatus.OK);
     }
 
     @PostMapping("/{idPessoa}")
@@ -35,7 +37,8 @@ public class EnderecoController  {
         log.info("Vinculando a Pessoa...");
         EnderecoDTO e = enderecoService.create(id, enderecoCreateDTO);
         log.info("Endereço criado!");
-        return new ResponseEntity<>(e, HttpStatus.OK);}
+        return new ResponseEntity<>(e, HttpStatus.OK);
+    }
 
 
     @PutMapping("/{idEndereco}")
@@ -44,12 +47,14 @@ public class EnderecoController  {
         log.info("Atualizando endereço...");
         EnderecoDTO e = enderecoService.update(id, enderecoAtualizar);
         log.info("Endereço Atualizado!");
-        return new ResponseEntity<>(e, HttpStatus.OK);}
+        return new ResponseEntity<>(e, HttpStatus.OK);
+    }
 
 
     @DeleteMapping("/{idEndereco}")
     public ResponseEntity<Void> delete(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException {
         log.info("Endereço removido!");
         enderecoService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);}
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

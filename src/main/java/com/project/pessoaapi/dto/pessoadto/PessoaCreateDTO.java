@@ -18,7 +18,7 @@ public class PessoaCreateDTO {
     private String nome;
     @Past
     @NotNull
-    @Schema(description = "Data de Nascimento do Usuario. Campo não pode ser vazio.", example = "1999/09/09")
+    @Schema(description = "Data de Nascimento do Usuario. Campo não pode ser vazio.", example = "1999-09-09")
     private LocalDate dataNascimento;
     private EnderecoCreateDTO enderecoCreateDTO;
 

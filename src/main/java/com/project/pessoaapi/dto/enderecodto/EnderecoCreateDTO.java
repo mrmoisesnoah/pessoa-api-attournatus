@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class EnderecoCreateDTO {
 
     @NotNull
-    @Schema(description = "Tipo de Endereço. Campo não pode ser vazio.", example = "RESIDENCIAL")
+    @Schema(description = "Tipo de Endereço. Campo não pode ser vazio.", example = "PRINCIPAL")
     private TipoEndereco tipo;
     @NotNull
     @NotBlank

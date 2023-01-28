@@ -2,6 +2,7 @@ package com.project.pessoaapi.controller.documentation;
 
 import com.project.pessoaapi.dto.enderecodto.EnderecoCreateDTO;
 import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
+import com.project.pessoaapi.dto.paginacaodto.PageDTO;
 import com.project.pessoaapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,26 +14,13 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface EnderecoOpInterface {
-    @Operation(summary = "Listagem de Endereços por Id", description = "Listagem de endereços a partir da pesquisa por IdEndereço!")
+    @Operation(summary = "Listagem de Endereços paginados, por Id opcional, ", description = "Listagem de endereços a partir da pesquisa por IdEndereço, sendo este opcional, e o retorno paginado!")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Retorna a lista de dados de acordo com a pesquisa"),
             @ApiResponse(responseCode = "403", description = "A algo de errado com as inserções de sua pesquisa"),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")})
     @GetMapping("/{idEndereco}")
-    public List<EnderecoDTO> listarByEndereco(@PathVariable("idEndereco") Integer id);
-
-    @Operation(summary = "Listagem de Endereços por pessoa.", description = "Listagem de endereços a partir da pesquisa por IdPessoa!")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Retorna a lista de dados de acordo com a pesquisa"),
-            @ApiResponse(responseCode = "403", description = "A algo de errado com as inserções de sua pesquisa"),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")})
-    @GetMapping("/{idPessoa}/pessoa")
-    public List<EnderecoDTO> listarByPessoa(@PathVariable("idPessoa") Integer id) throws RegraDeNegocioException;
-
-    @Operation(summary = "Listagem de Endereços", description = "Lista todos os endereços.")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Retorna a lista de dados de acordo com a pesquisa"),
-            @ApiResponse(responseCode = "403", description = "A algo de errado com as inserções de sua pesquisa"),
-            @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção    ")})
-    @GetMapping
-    public List<EnderecoDTO> list();
+    ResponseEntity<PageDTO<EnderecoDTO>> listarPaginado(@RequestParam(required = false) Integer idEndereco,
+                                                        Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastro de Endereços.", description = "Cadastramento de endereços por IdPessoa!")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Cadastro realizado com Sucesso!"),

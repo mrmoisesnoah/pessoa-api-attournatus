@@ -1,8 +1,12 @@
 package com.project.pessoaapi.controller.documentation;
 
 
+import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
+import com.project.pessoaapi.dto.paginacaodto.PageDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaCreateDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaDTO;
+import com.project.pessoaapi.dto.pessoadto.PessoaUpdateDTO;
+import com.project.pessoaapi.enums.TipoEndereco;
 import com.project.pessoaapi.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,19 +19,21 @@ import java.util.List;
 
 public interface PessoaOpInterface {
 
-    @Operation(summary = "Listagem de Pessoas por nome.", description = "Listagem de dados a partir do nome da Pessoa. Exemplo: localhost:8080/pessoa/byname?nome=Rafa")
+    @Operation(summary = "Busca por endereços de acordo com Tipo e nome do Titular.", description = "Listagem de dados a partir do Tipo de Endereço e nome da pessoa.")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Listagem realizada com sucesso! "),
             @ApiResponse(responseCode = "403", description = "A algo de errado com as inserções de sua pesquisa"),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")})
     @GetMapping("/byname")
-    public List<PessoaDTO> listByName(@RequestParam("nome") String nome) throws RegraDeNegocioException;
+    List<EnderecoDTO> buscarEndereco(@RequestParam(required = false) String nome, @RequestParam("tipo") TipoEndereco tipo) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listagem de Pessoas.", description = "Lista os dados referentes a busca do banco")
+    @Operation(summary = "Listagem de Pessoas paginada por ID e Nome.", description = "Lista os dados referentes a busca realizada através de nome ou ID, sendo estes opcionais")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Retorna a lista de dados de acordo com a pesquisa"),
             @ApiResponse(responseCode = "403", description = "A algo de errado com as inserções de sua pesquisa"),
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")})
     @GetMapping
-    public List<PessoaDTO> list();
+    ResponseEntity<PageDTO<PessoaDTO>> listarPaginado(@RequestParam(required = false) Integer idPessoa,
+                                                      @RequestParam(required = false) String nome,
+                                                      Integer pagina, Integer tamanho) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastro de Pessoa.", description = "Cadastramento de dados de usuários")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Cadastro realizado com Sucesso!"),
@@ -42,7 +48,7 @@ public interface PessoaOpInterface {
             @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")})
     @PutMapping("/{idPessoa}")
     public ResponseEntity<PessoaDTO> update(@PathVariable("idPessoa") Integer id,
-                                            @Valid @RequestBody PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException;
+                                            @Valid @RequestBody PessoaUpdateDTO pessoaUpdateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Remoção de Pessoas.", description = "Remoção de dados dos usuários por IdPessoa!")
     @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Remoção de dados realizada!"),

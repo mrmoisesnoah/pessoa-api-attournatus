@@ -3,7 +3,6 @@ package com.project.pessoaapi.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.pessoaapi.dto.enderecodto.EnderecoCreateDTO;
-import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
 import com.project.pessoaapi.dto.paginacaodto.PageDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaCreateDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaDTO;
@@ -28,42 +27,15 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class PessoaService {
     private final PessoaRepository pessoaRepository;
-
-    private final ObjectMapper objectMapper;
     private final EnderecoRepository enderecoRepository;
+    private final ObjectMapper objectMapper;
 
-
-    public PessoaDTO create(PessoaCreateDTO pessoa) throws RegraDeNegocioException {
-
-        PessoaEntity pessoaEntity = objectMapper.convertValue(pessoa, PessoaEntity.class);
-        EnderecoCreateDTO enderecoCreateDTO = pessoa.getEnderecoCreateDTO();
-        EnderecoEntity enderecoEntity = objectMapper.convertValue(enderecoCreateDTO, EnderecoEntity.class);
-
-        enderecoRepository.save(enderecoEntity);
-
-        Set<EnderecoEntity> enderecoEntitySet = new HashSet<>();
-        enderecoEntitySet.add(enderecoEntity);
-        pessoaEntity.setEnderecoEntity(enderecoEntitySet);
-
-        PessoaEntity pessoaEntitySalva = pessoaRepository.save(pessoaEntity);
-
-        List<PessoaEnderecoDTO> enderecoDTOSet = new ArrayList<>();
-        PessoaEnderecoDTO enderecoDTO = objectMapper.convertValue(enderecoEntity, PessoaEnderecoDTO.class);
-        PessoaDTO pessoaDTO = objectMapper.convertValue(pessoaEntitySalva, PessoaDTO.class);
-
-        enderecoDTOSet.add(enderecoDTO);
-        pessoaDTO.setEnderecoDTOList(enderecoDTOSet);
-
-        return pessoaDTO;
-    }
-
-    public PageDTO<PessoaDTO> listarPaginado(Integer page, Integer size) throws RegraDeNegocioException {
+    public PageDTO<PessoaDTO> listarPaginado(Integer idPessoa, String nome, Integer page, Integer size) throws RegraDeNegocioException {
         if (size < 0 || page < 0) {
             throw new RegraDeNegocioException("Page ou Size não pode ser menor que zero.");
         }
         if (size > 0) {
-            PageRequest pageRequest = PageRequest.of(page, size);
-            Page<PessoaEntity> paginaRepository = pessoaRepository.findAll(pageRequest);
+            Page<PessoaEntity> paginaRepository = filtrarPessoas(idPessoa, nome, page, size);
 
             List<PessoaDTO> pessoaDTOList = paginaRepository.stream().map(this::converterParaDTO).toList();
 
@@ -77,28 +49,32 @@ public class PessoaService {
         return new PageDTO<>(0L, 0, 0, size, listaVazia);
     }
 
-    public PessoaDTO converterParaDTO(PessoaEntity pessoaEntity){
-        PessoaDTO pessoaDTO = objectMapper.convertValue(pessoaEntity, PessoaDTO.class);
-        List<PessoaEnderecoDTO> enderecoDTO = pessoaEntity.getEnderecoEntity().stream()
-                .map(enderecoEntity -> objectMapper.convertValue(enderecoEntity, PessoaEnderecoDTO.class))
-                .toList();
-        pessoaDTO.setEnderecoDTOList(enderecoDTO);
+    public PessoaDTO create(PessoaCreateDTO pessoaCreateDTO) throws RegraDeNegocioException {
+
+        PessoaEntity pessoaEntity = objectMapper.convertValue(pessoaCreateDTO, PessoaEntity.class);
+        EnderecoCreateDTO enderecoCreateDTO = pessoaCreateDTO.getEnderecoCreateDTO();
+        EnderecoEntity enderecoEntity = objectMapper.convertValue(enderecoCreateDTO, EnderecoEntity.class);
+
+        enderecoRepository.save(enderecoEntity);
+
+        Set<EnderecoEntity> enderecoEntitySet = new HashSet<>();
+        enderecoEntitySet.add(enderecoEntity);
+        pessoaEntity.setEnderecoEntity(enderecoEntitySet);
+
+        PessoaEntity pessoaEntitySalva = pessoaRepository.save(pessoaEntity);
+
+        PessoaDTO pessoaDTO = converterParaDTO(pessoaEntitySalva);
         return pessoaDTO;
     }
 
     public PessoaDTO update(Integer id, PessoaUpdateDTO pessoaCapturada) throws RegraDeNegocioException {
         PessoaEntity pessoaEntityRecuperada = findById(id);
+        pessoaEntityRecuperada.setNome(pessoaCapturada.getNome());
+        pessoaEntityRecuperada.setDataNascimento(pessoaCapturada.getDataNascimento());
 
-        PessoaEntity pessoaAtualizar = objectMapper.convertValue(pessoaCapturada, PessoaEntity.class);
-        pessoaEntityRecuperada.setNome(pessoaAtualizar.getNome());
-        pessoaEntityRecuperada.setDataNascimento(pessoaAtualizar.getDataNascimento());
-        pessoaRepository.save(pessoaEntityRecuperada);
+        PessoaEntity pessoaSalva = pessoaRepository.save(pessoaEntityRecuperada);
 
-        List<PessoaEnderecoDTO> pessoaEnderecoDTOList = pessoaEntityRecuperada.getEnderecoEntity().stream()
-                .map(enderecoEntity -> objectMapper.convertValue(enderecoEntity, PessoaEnderecoDTO.class)).toList();
-
-        PessoaDTO pessoaDTO = objectMapper.convertValue(pessoaEntityRecuperada, PessoaDTO.class);
-        pessoaDTO.setEnderecoDTOList(pessoaEnderecoDTOList);
+        PessoaDTO pessoaDTO = converterParaDTO(pessoaSalva);
         return pessoaDTO;
     }
 
@@ -107,14 +83,29 @@ public class PessoaService {
         pessoaRepository.delete(pessoaEntityEncontrada);
     }
 
-    public List<PessoaDTO> listByName(String nome) throws RegraDeNegocioException {
-        return pessoaRepository.findByNomeContainingIgnoreCase(nome)
-                .stream().map(pessoa -> objectMapper.convertValue(pessoa, PessoaDTO.class))
-                .toList();
-    }
-
     public PessoaEntity findById(Integer id) throws RegraDeNegocioException {
         return pessoaRepository.findById(id)
                 .orElseThrow(() -> new RegraDeNegocioException("Não foi posivel localizar essa pessoa!"));
     }
+
+    public PessoaDTO converterParaDTO(PessoaEntity pessoaEntity) {
+        PessoaDTO pessoaDTO = objectMapper.convertValue(pessoaEntity, PessoaDTO.class);
+        List<PessoaEnderecoDTO> enderecoDTO = pessoaEntity.getEnderecoEntity().stream()
+                .map(enderecoEntity -> objectMapper.convertValue(enderecoEntity, PessoaEnderecoDTO.class))
+                .toList();
+        pessoaDTO.setEnderecoDTOList(enderecoDTO);
+        return pessoaDTO;
+    }
+
+
+    private Page<PessoaEntity> filtrarPessoas(Integer idPessoa, String nome, Integer pagina, Integer tamanho) {
+        PageRequest pageRequest = PageRequest.of(pagina, tamanho);
+        if (!(idPessoa == null)) {
+            return pessoaRepository.findByIdPessoa(pageRequest, idPessoa);
+        } else if (!(nome == null)) {
+            return pessoaRepository.findByNomeContainingIgnoreCase(pageRequest, nome);
+        }
+        return pessoaRepository.findAll(pageRequest);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.project.pessoaapi.controller;
 
+import com.project.pessoaapi.controller.documentation.PessoaOpInterface;
 import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
 import com.project.pessoaapi.dto.paginacaodto.PageDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaCreateDTO;
@@ -24,22 +25,21 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/pessoa")
-public class PessoaController {
+public class PessoaController implements PessoaOpInterface {
     private final PessoaService pessoaService;
     private final EnderecoService enderecoService;
 
-    @GetMapping("/byname")
-    public List<PessoaDTO> listByName(@RequestParam("nome") String nome) throws RegraDeNegocioException {
-        return pessoaService.listByName(nome);
-    }
 
     @GetMapping("/buscar-endereco")
-    public EnderecoDTO buscarEndereco(@RequestParam("nome") String nome, @RequestParam("tipo") TipoEndereco tipo) throws RegraDeNegocioException {
+    public List<EnderecoDTO> buscarEndereco(@RequestParam(required = false) String nome, @RequestParam("tipo") TipoEndereco tipo) throws RegraDeNegocioException {
         return enderecoService.listarPorPessoaEtipoEndereco(nome,tipo);
     }
+
     @GetMapping("/listar-paginado")
-    public ResponseEntity<PageDTO<PessoaDTO>> list(Integer pagina, Integer tamanho) throws RegraDeNegocioException {
-        return new ResponseEntity<>(pessoaService.listarPaginado(pagina, tamanho), HttpStatus.OK);
+    public ResponseEntity<PageDTO<PessoaDTO>> listarPaginado(@RequestParam(required = false) Integer idPessoa,
+                                                   @RequestParam(required = false) String nome,
+                                                   Integer pagina, Integer tamanho) throws RegraDeNegocioException {
+        return new ResponseEntity<>(pessoaService.listarPaginado(idPessoa, nome, pagina, tamanho), HttpStatus.OK);
     }
 
     @PostMapping
@@ -52,9 +52,9 @@ public class PessoaController {
 
     @PutMapping("/{idPessoa}")
     public ResponseEntity<PessoaDTO> update(@PathVariable("idPessoa") Integer id,
-                                            @Valid @RequestBody PessoaUpdateDTO pessoaAtualizar) throws RegraDeNegocioException {
+                                            @Valid @RequestBody PessoaUpdateDTO pessoaUpdateDTO) throws RegraDeNegocioException {
         log.info("Atualizando pessoa...");
-        PessoaDTO p = pessoaService.update(id, pessoaAtualizar);
+        PessoaDTO p = pessoaService.update(id, pessoaUpdateDTO);
         log.info("Pessoa atualizada com sucesso!");
         return new ResponseEntity<>(p, HttpStatus.OK);
     }
