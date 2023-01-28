@@ -1,6 +1,7 @@
 package com.project.pessoaapi.factory;
 
 import com.project.pessoaapi.dto.enderecodto.EnderecoDTO;
+import com.project.pessoaapi.dto.pessoadto.PessoaCreateDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaEnderecoDTO;
 import com.project.pessoaapi.dto.pessoadto.PessoaUpdateDTO;
@@ -19,8 +20,7 @@ public class PessoaFactory {
     public static PessoaEntity getPessoaEntity(){
         PessoaEntity pessoaEntity = new PessoaEntity();
         Set<EnderecoEntity> enderecoEntitySet = new HashSet<>();
-        EnderecoEntity enderecoEntity = new EnderecoEntity();
-        enderecoEntitySet.add(enderecoEntity);
+        enderecoEntitySet.add(EnderecoFactory.getEnderecoEntity());
         pessoaEntity.setIdPessoa(1);
         pessoaEntity.setNome("Joao Teste");
         pessoaEntity.setDataNascimento(LocalDate.of(1994, 12, 01));
@@ -43,6 +43,14 @@ public class PessoaFactory {
         pessoaUpdateDTO.setNome("Joao Teste");
         pessoaUpdateDTO.setDataNascimento(LocalDate.of(1994, 12, 01));
         return pessoaUpdateDTO;
+    }
+
+    public static PessoaCreateDTO getPessoaCreateDTO(){
+        PessoaCreateDTO pessoaCreateDTO = new PessoaCreateDTO();
+        pessoaCreateDTO.setNome("Joao Teste");
+        pessoaCreateDTO.setDataNascimento(LocalDate.of(1994, 12, 01));
+        pessoaCreateDTO.setEnderecoCreateDTO(EnderecoFactory.getEnderecoCreateDTO());
+        return pessoaCreateDTO;
     }
     public static PessoaEnderecoDTO getPessoaEnderecoDTO(){
         PessoaEnderecoDTO pessoaEnderecoDTO = new PessoaEnderecoDTO();

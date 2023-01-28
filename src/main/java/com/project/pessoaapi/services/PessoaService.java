@@ -98,7 +98,7 @@ public class PessoaService {
     }
 
 
-    private Page<PessoaEntity> filtrarPessoas(Integer idPessoa, String nome, Integer pagina, Integer tamanho) {
+    public Page<PessoaEntity> filtrarPessoas(Integer idPessoa, String nome, Integer pagina, Integer tamanho) {
         PageRequest pageRequest = PageRequest.of(pagina, tamanho);
         if (!(idPessoa == null)) {
             return pessoaRepository.findByIdPessoa(pageRequest, idPessoa);
