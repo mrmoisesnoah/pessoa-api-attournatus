@@ -2,7 +2,7 @@
 
 # Sobre o projeto
 Projeto de avaliação para processo Desenvolvedor Back Attournatus. Com utilização de ferramentas Springframework.
-Aplicação projetada para simular um ambiente de gerenciamento de pessoas. Na aplicação foram usadas as ferramentas disponíveis pelo Spring Framework, entre outras bibliotecas.
+Aplicação projetada para simular um ambiente de gerenciamento de pessoas. Na aplicação foram usadas as ferramentas disponíveis pelo Spring Framework, entre outras bibliotecas. Assim como, teve cobertura de 100% das linhas das Services em testes unitarios, utilizando-se do Mockito. 
 
 A aplicação segue configurada e documentada pela ferramenta Swagger, pelo qual podem ser acessadas suas funcionalidades, bastando clonar este repositorio para sua máquina, rodar a aplicação através de uma IDEA como o Intelijj, e acessar os endpoints de suas funcionalidades através do Swagger, apenas conectando no seu navegador pelo link: 
 
