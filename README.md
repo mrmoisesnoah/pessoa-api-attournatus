@@ -13,7 +13,5 @@ Aplicação projetada para simular um ambiente de gerenciamento de pessoas.
 ## ✔️ Tecnologias utilizadas
 
 - ``Java 17``
-- ``IntelliJ IDEA``
 - ``H2 DB``
-- ``DBeaver``
-- ``Docker``
+
